@@ -1,0 +1,38 @@
+{
+  "name": "grunt-legacy-fail",
+  "description": "Grunt's fail methods, as a standalone library.",
+  "version": "0.1.0",
+  "homepage": "https://github.com/gruntjs/grunt-legacy-fail",
+  "author": {
+    "name": "\"Cowboy\" Ben Alman",
+    "url": "http://benalman.com/"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/gruntjs/grunt-legacy-fail.git"
+  },
+  "bugs": {
+    "url": "https://github.com/gruntjs/grunt-legacy-fail/issues"
+  },
+  "license": {
+    "type": "MIT",
+    "url": "https://github.com/gruntjs/grunt-legacy-fail/blob/master/LICENSE"
+  },
+  "files": [
+    "index.js"
+  ],
+  "main": "index.js",
+  "engines": {
+    "node": ">=0.10.0"
+  },
+  "scripts": {
+    "test": "mocha"
+  },
+  "keywords": [
+    "fail",
+    "grunt"
+  ],
+  "dependencies": {
+    "grunt": "^0.4.5"
+  }
+}
