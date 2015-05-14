@@ -22,10 +22,6 @@
   "scripts": {
     "test": "mocha"
   },
-  "keywords": [
-    "fail",
-    "grunt"
-  ],
   "dependencies": {
     "grunt": "^0.4.5"
   },
@@ -33,5 +29,10 @@
     "grunt-contrib-jshint": "^0.11.2",
     "jshint-stylish": "^1.0.2",
     "mocha": "^2.2.4"
-  }
+  },
+  "keywords": [
+    "grunt-legacy",
+    "fail",
+    "grunt"
+  ]
 }
