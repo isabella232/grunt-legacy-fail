@@ -1,7 +1,7 @@
 /*!
- * grunt-legacy-fail <http://gruntjs.com/grunt-legacy-fail>
+ * grunt <http://gruntjs.com/>
  *
- * Copyright (c) 2015, "Cowboy" Ben Alman.
+ * Copyright (c) 2013-2015 "Cowboy" Ben Alman.
  * Licensed under the MIT license.
  */
 
