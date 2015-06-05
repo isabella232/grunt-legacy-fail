@@ -11,8 +11,14 @@ var chalk = require('chalk');
 var logger = require('grunt-legacy-log-facade');
 var legacyUtil = require('grunt-legacy-util');
 
-function Fail(option) {
-  this.option = option || {};
+function Fail(options) {
+  this.options = {};
+  if (typeof options === 'function') {
+    this.option = options;
+  } else {
+    this.options = options || {};
+    this.option = optionsFn(this.options);
+  }
 
   // Keep track of error and warning counts.
   this.errorcount = 0;
@@ -85,6 +91,22 @@ Fail.prototype.report = function() {
     this.log.writeln().success('Done, without errors.');
   }
 };
+
+/**
+ * Returns a function for getting properties defined on `obj`.
+ * This is used as a fallback function when one isn't passed
+ * to the constructor.
+ *
+ * @param  {Object} `obj`
+ * @return {Function} Returns a function for getting an option by `name`
+ */
+
+function optionsFn(obj) {
+  return function (name) {
+    var no = name.match(/^no-(.+)$/);
+    return no ? !obj[no[1]] : obj[name];
+  };
+}
 
 /**
  * Expose `Fail`
