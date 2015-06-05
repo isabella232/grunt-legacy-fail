@@ -8,7 +8,7 @@
 'use strict';
 
 var chalk = require('chalk');
-var logger = require('grunt-legacy-event-logger/lib/facade');
+var logger = require('grunt-legacy-log-facade');
 var legacyUtil = require('grunt-legacy-util');
 
 function Fail(option) {

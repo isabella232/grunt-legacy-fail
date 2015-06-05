@@ -24,7 +24,7 @@
   },
   "dependencies": {
     "chalk": "^1.0.0",
-    "grunt-legacy-event-logger": "gruntjs/grunt-legacy-event-logger",
+    "grunt-legacy-log-facade": "gruntjs/grunt-legacy-log-facade",
     "grunt-legacy-util": "^0.2.0"
   },
   "devDependencies": {
