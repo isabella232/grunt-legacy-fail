@@ -7,76 +7,87 @@
 
 'use strict';
 
-var grunt = require('grunt');
+var chalk = require('chalk');
+var logger = require('grunt-legacy-event-logger/lib/facade');
+var legacyUtil = require('grunt-legacy-util');
 
-// The module to be exported.
-var fail = module.exports = {};
+function Fail(option) {
+  this.option = option || {};
 
-// Error codes.
-fail.code = {
-  FATAL_ERROR: 1,
-  MISSING_GRUNTFILE: 2,
-  TASK_FAILURE: 3,
-  TEMPLATE_ERROR: 4,
-  INVALID_AUTOCOMPLETE: 5,
-  WARNING: 6,
-};
+  // Keep track of error and warning counts.
+  this.errorcount = 0;
+  this.warncount = 0;
 
-// DRY it up!
-function writeln(e, mode) {
-  grunt.log.muted = false;
-  var msg = String(e.message || e);
-  if (!grunt.option('no-color')) { msg += '\x07'; } // Beep!
-  if (mode === 'warn') {
-    msg = 'Warning: ' + msg + ' ';
-    msg += (grunt.option('force') ? 'Used --force, continuing.'.underline : 'Use --force to continue.');
-    msg = msg.yellow;
-  } else {
-    msg = ('Fatal error: ' + msg).red;
-  }
-  grunt.log.writeln(msg);
+  // Error codes.
+  this.code = {
+    FATAL_ERROR: 1,
+    MISSING_GRUNTFILE: 2,
+    TASK_FAILURE: 3,
+    TEMPLATE_ERROR: 4,
+    INVALID_AUTOCOMPLETE: 5,
+    WARNING: 6,
+  };
+  this.log = logger.logMethodsToEvents();
 }
 
+// DRY it up!
+Fail.prototype._writeln = function(e, mode) {
+  this.log.muted = false;
+  var msg = String(e.message || e);
+  if (!this.option('no-color')) { msg += '\x07'; } // Beep!
+  if (mode === 'warn') {
+    msg = 'Warning: ' + msg + ' ';
+    msg += (this.option('force') ? chalk.underline('Used --force, continuing.') : 'Use --force to continue.');
+    msg = chalk.yellow(msg);
+  } else {
+    msg = chalk.red('Fatal error: ' + msg);
+  }
+  this.log.writeln(msg);
+};
+
 // If --stack is enabled, log the appropriate error stack (if it exists).
-function dumpStack(e) {
-  if (grunt.option('stack')) {
+Fail.prototype._dumpStack = function(e) {
+  if (this.option('stack')) {
     if (e.origError && e.origError.stack) {
       console.log(e.origError.stack);
     } else if (e.stack) {
       console.log(e.stack);
     }
   }
-}
-
-// A fatal error occurred. Abort immediately.
-fail.fatal = function(e, errcode) {
-  writeln(e, 'fatal');
-  dumpStack(e);
-  grunt.util.exit(typeof errcode === 'number' ? errcode : fail.code.FATAL_ERROR);
 };
 
-// Keep track of error and warning counts.
-fail.errorcount = 0;
-fail.warncount = 0;
+// A fatal error occurred. Abort immediately.
+Fail.prototype.fatal = function(e, errcode) {
+  this._writeln(e, 'fatal');
+  this._dumpStack(e);
+  legacyUtil.exit(typeof errcode === 'number' ? errcode : this.code.FATAL_ERROR);
+};
+
 
 // A warning occurred. Abort immediately unless -f or --force was used.
-fail.warn = function(e, errcode) {
+Fail.prototype.warn = function(e, errcode) {
   var message = typeof e === 'string' ? e : e.message;
-  fail.warncount++;
-  writeln(message, 'warn');
+  this.warncount++;
+  this._writeln(message, 'warn');
   // If -f or --force aren't used, stop script processing.
-  if (!grunt.option('force')) {
-    dumpStack(e);
-    grunt.log.writeln().fail('Aborted due to warnings.');
-    grunt.util.exit(typeof errcode === 'number' ? errcode : fail.code.WARNING);
+  if (!this.option('force')) {
+    this._dumpStack(e);
+    this.log.writeln().fail('Aborted due to warnings.');
+    legacyUtil.exit(typeof errcode === 'number' ? errcode : this.code.WARNING);
   }
 };
 
 // This gets called at the very end.
-fail.report = function() {
-  if (fail.warncount > 0) {
-    grunt.log.writeln().fail('Done, but with warnings.');
+Fail.prototype.report = function() {
+  if (this.warncount > 0) {
+    this.log.writeln().fail('Done, but with warnings.');
   } else {
-    grunt.log.writeln().success('Done, without errors.');
+    this.log.writeln().success('Done, without errors.');
   }
 };
+
+/**
+ * Expose `Fail`
+ */
+
+exports.Fail = Fail;

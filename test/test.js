@@ -12,5 +12,7 @@ var assert = require('assert');
 var fail = require('../');
 
 describe('fail', function () {
-
+  it('should fail!', function () {
+    
+  });
 });
